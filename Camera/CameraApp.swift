@@ -7,12 +7,7 @@ import SwiftUI
         }
         .windowStyle(.plain)
         .windowLevel(.floating)
-        .defaultWindowPlacement { _, context in
-            let visible = context.defaultDisplay.visibleRect
-            return WindowPlacement(
-                CGPoint(x: visible.maxX - 340, y: visible.maxY - 200),
-                size: CGSize(width: 320, height: 180)
-            )
-        }
+        .defaultSize(width: 320, height: 180)
+        .defaultWindowPlacement { _, _ in WindowPlacement(.bottomTrailing) }
     }
 }

@@ -24,13 +24,21 @@ scope.
     tracking area sets the `NSCursor.frameResize` cursors instead.
   - Clicks on fully transparent pixels fall through to the window behind. The resize margin
     around the video has a 1% black fill so it catches them.
-  - Don't resize the window by hand from mouse events: it was janky. Let AppKit do it.
+  - Don't resize the window by hand from mouse events: it was janky. Let AppKit do it. There's
+    no public API to hand a drag to AppKit's resize (only `performDrag`/`WindowDragGesture`, which
+    move), so the 4pt `margin` is sized to roughly match AppKit's borderless resize zone.
+  - The window's corners must stay non-transparent too, or corner resizing breaks.
+- `defaultWindowPlacement` anchors with a `UnitPoint`: the restored size can be larger than
+  the default, and a fixed point pushed it off-screen.
 - Camera access: `ENABLE_RESOURCE_ACCESS_CAMERA` (sandbox entitlement) and
   `INFOPLIST_KEY_NSCameraUsageDescription` in build settings.
 
 ## Verify
 
 ```sh
-xcodebuild -project Camera.xcodeproj -scheme Camera -destination 'platform=macOS' -derivedDataPath DerivedData build
-open DerivedData/Build/Products/Debug/Camera.app
+xcodebuild -project Camera.xcodeproj -scheme Camera -destination 'platform=macOS' -derivedDataPath DerivedData/Camera build
+open DerivedData/Camera/Build/Products/Debug/Camera.app
 ```
+
+`DerivedData/Camera` is where Xcode itself builds (project-relative DerivedData), so both share
+one build.

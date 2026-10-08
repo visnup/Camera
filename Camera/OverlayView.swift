@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OverlayView: View {
     @AppStorage("circle") private var circle = false
+    @State private var hovering = false
 
     var body: some View {
         let shape = circle ? AnyShape(.circle) : AnyShape(.rect(cornerRadius: 16))
@@ -10,11 +11,14 @@ struct OverlayView: View {
             .allowsHitTesting(false)
             .clipShape(shape)
             .contentShape(shape)
+            .onTapGesture(count: 2) { circle.toggle() }
             .gesture(WindowDragGesture())
             .allowsWindowActivationEvents(true)
-            .onTapGesture(count: 2) { circle.toggle() }
             .padding(ResizableView.margin)
+            .background(.black.opacity(hovering ? 0.3 : 0), in: .rect(cornerRadius: 16 + ResizableView.margin))
             .background(.black.opacity(0.01)) // fully transparent pixels click through the window
+            .onHover { hovering = $0 }
+            .animation(.default, value: hovering)
             .frame(minWidth: 90, minHeight: 90)
     }
 }
@@ -47,7 +51,7 @@ struct CameraView: NSViewRepresentable {
 /// It also can't become key, so cursor rects and `.pointerStyle` never apply; an
 /// always-active tracking area over the window's margin sets the resize cursors instead.
 final class ResizableView: NSView {
-    static let margin: CGFloat = 8
+    static let margin: CGFloat = 4
 
     override func viewDidMoveToWindow() {
         window?.styleMask.insert(.resizable)
