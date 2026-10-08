@@ -5,6 +5,9 @@ scope.
 
 ## Code
 
+- Keep the code as small and tight as possible. This is a single-purpose app: it should do that
+  one thing very well and nothing else. Reach for whatever macOS and SwiftUI already provide
+  before writing code, and prefer deleting code to adding it.
 - Latest Swift (language mode 6) with strict concurrency. Default actor isolation is `MainActor`.
 - SwiftUI first, using the newest APIs the deployment target allows: scene modifiers such as
   `.windowStyle(.plain)`, `.windowLevel`, `.defaultWindowPlacement`, `WindowDragGesture`.
@@ -62,3 +65,27 @@ open DerivedData/Camera/Build/Products/Debug/Camera.app
 
 `DerivedData/Camera` is where Xcode itself builds (project-relative DerivedData), so both share
 one build.
+
+## Todo
+
+Delete items when they're done; the history is in git.
+
+- Animate between circle and rectangle. `AnyShape` doesn't interpolate, so this probably
+  wants one shape with an animatable corner radius (a rect whose radius goes to half the
+  shorter side) plus a square frame in circle mode.
+- Animate mirroring, if it can look good. A preview layer's `isVideoMirrored` snaps; a
+  SwiftUI flip (`scaleEffect(x: -1)` or a `rotation3DEffect`) would animate.
+- Research resizing and do it in the most idiomatic macOS way. Today it's AppKit's narrow
+  borderless resize zone, a 4pt margin sized to roughly match it, and hand-set cursors.
+  Look at how other borderless and shaped utility windows do it, whether SwiftUI or AppKit
+  now has a resize affordance for plain windows, `NSPanel`, and how a titled window with a
+  hidden title bar and buttons compares.
+- In circle mode, make the window square, or resize it to a square, so there's no dead
+  transparent area beside the circle. Match the hover frame to the circle too.
+- Show over other apps' full-screen Spaces. Per Apple DTS this needs an `.accessory`
+  activation policy and a non-activating `NSPanel`. It goes with moving to a menu bar extra,
+  since accessory apps have no menu bar for the View menu.
+- If the saved frame is off-screen (a display was unplugged), check that it comes back on
+  screen.
+- Before sharing builds: a real bundle identifier (this resets camera permission), a README,
+  and a signed, notarized release.
