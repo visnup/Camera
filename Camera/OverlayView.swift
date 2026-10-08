@@ -1,7 +1,7 @@
 import AVFoundation
 import SwiftUI
 
-struct ContentView: View {
+struct OverlayView: View {
     var body: some View {
         CameraView()
             .allowsHitTesting(false)
@@ -38,5 +38,5 @@ struct CameraView: NSViewRepresentable {
 }
 
 #Preview {
-    ContentView()
+    OverlayView()
 }

@@ -1,9 +1,9 @@
 import SwiftUI
 
-@main struct MyApp: App {
+@main struct CameraApp: App {
     var body: some Scene {
         Window("Camera", id: "camera") {
-            ContentView()
+            OverlayView()
         }
         .windowStyle(.plain)
         .windowLevel(.floating)

@@ -14,8 +14,8 @@ scope.
 
 ## Layout
 
-- `Camera/MyApp.swift`: the single overlay `Window` scene.
-- `Camera/ContentView.swift`: the camera view and its capture session.
+- `Camera/CameraApp.swift`: the single overlay `Window` scene.
+- `Camera/OverlayView.swift`: the overlay and the camera view with its capture session.
 - Sources are a file-system-synchronized group, so new files in `Camera/` join the target without
   editing `project.pbxproj`.
 - Camera access: `ENABLE_RESOURCE_ACCESS_CAMERA` (sandbox entitlement) and
