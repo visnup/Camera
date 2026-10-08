@@ -50,11 +50,15 @@ struct CameraView: NSViewRepresentable {
 /// `.windowStyle(.plain)` makes a borderless window that SwiftUI gives no way to resize.
 /// It also can't become key, so cursor rects and `.pointerStyle` never apply; an
 /// always-active tracking area over the window's margin sets the resize cursors instead.
+/// Its frame is autosaved, since SwiftUI only restores windows when macOS's
+/// "Close windows when quitting an application" setting is off.
 final class ResizableView: NSView {
     static let margin: CGFloat = 4
 
     override func viewDidMoveToWindow() {
         window?.styleMask.insert(.resizable)
+        // after SwiftUI's own initial sizing, which would override the restored frame
+        Task { window?.setFrameAutosaveName("Camera") }
         window?.contentView?.addTrackingArea(NSTrackingArea(
             rect: .zero,
             options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect],

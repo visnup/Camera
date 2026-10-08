@@ -28,8 +28,11 @@ scope.
     no public API to hand a drag to AppKit's resize (only `performDrag`/`WindowDragGesture`, which
     move), so the 4pt `margin` is sized to roughly match AppKit's borderless resize zone.
   - The window's corners must stay non-transparent too, or corner resizing breaks.
-- `defaultWindowPlacement` anchors with a `UnitPoint`: the restored size can be larger than
-  the default, and a fixed point pushed it off-screen.
+- SwiftUI never restores the window with macOS's default "Close windows when quitting an
+  application" setting, and resizes it on launch itself (to 900×450 without `.defaultSize`).
+  `ResizableView` sets a frame autosave name one task after it gets its window, so the saved
+  frame lands after SwiftUI's sizing. `defaultWindowPlacement` only applies before there's
+  a saved frame.
 - Camera access: `ENABLE_RESOURCE_ACCESS_CAMERA` (sandbox entitlement) and
   `INFOPLIST_KEY_NSCameraUsageDescription` in build settings.
 
