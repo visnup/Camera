@@ -5,7 +5,7 @@ struct OverlayView: View {
     var body: some View {
         CameraView()
             .allowsHitTesting(false)
-            .frame(width: 320, height: 180)
+            .frame(minWidth: 90, minHeight: 90)
             .clipShape(.rect(cornerRadius: 16))
             .contentShape(.rect)
             .gesture(WindowDragGesture())
@@ -27,7 +27,7 @@ struct CameraView: NSViewRepresentable {
         layer.connection?.automaticallyAdjustsVideoMirroring = false
         layer.connection?.isVideoMirrored = true
 
-        let view = NSView()
+        let view = ResizableView()
         view.layer = layer
         view.wantsLayer = true
         Task.detached { session.startRunning() }
@@ -37,6 +37,9 @@ struct CameraView: NSViewRepresentable {
     func updateNSView(_ nsView: NSView, context: Context) {}
 }
 
-#Preview {
-    OverlayView()
+/// `.windowStyle(.plain)` makes a borderless window that SwiftUI gives no way to resize.
+private final class ResizableView: NSView {
+    override func viewDidMoveToWindow() {
+        window?.styleMask.insert(.resizable)
+    }
 }
