@@ -16,7 +16,9 @@ scope.
 ## Layout
 
 - `Camera/CameraApp.swift`: the single overlay `Window` scene.
-- `Camera/OverlayView.swift`: the overlay and the camera view with its capture session.
+- `Camera/OverlayView.swift`: the overlay, the camera-access check, and the camera view with
+  its capture session. The camera, mirroring and shape are `@AppStorage`, set from the View menu.
+- `Camera/Cameras.swift`: the camera list for the View menu, kept current as devices connect.
 - `Camera/WindowBehavior.swift`: AppKit fixes for the borderless window, as a background view.
 - `Camera/Icon.icon`: the Icon Composer app icon, set by `ASSETCATALOG_COMPILER_APPICON_NAME`.
   It's compiled by the Resources build phase, so keep that phase even when it looks empty.
