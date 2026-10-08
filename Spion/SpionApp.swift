@@ -2,7 +2,7 @@ import AVFoundation
 import SwiftUI
 
 @main struct SpionApp: App {
-    @AppStorage("circle") private var circle = false
+    @AppStorage("circle") private var circle = true
     @AppStorage("camera") private var camera = ""
     @AppStorage("mirrored") private var mirrored = true
     @State private var cameras = Cameras()
@@ -22,19 +22,22 @@ import SwiftUI
                     Text("Circle").tag(true)
                 }
                 .pickerStyle(.inline)
+                .labelsHidden()
 
                 Divider()
-
+            }
+            CommandMenu("Camera") {
                 Picker("Camera", selection: selectedCamera) {
                     ForEach(cameras.devices, id: \.uniqueID) { device in
                         Text(device.localizedName).tag(device.uniqueID)
                     }
                 }
                 .pickerStyle(.inline)
-
-                Toggle("Mirror", isOn: $mirrored)
+                .labelsHidden()
 
                 Divider()
+
+                Toggle("Mirror", isOn: $mirrored)
             }
         }
     }

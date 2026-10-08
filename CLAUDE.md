@@ -20,8 +20,8 @@ scope.
 
 - `Spion/SpionApp.swift`: the single overlay `Window` scene.
 - `Spion/OverlayView.swift`: the overlay, the camera-access check, and the camera view with
-  its capture session. The camera, mirroring and shape are `@AppStorage`, set from the View menu.
-- `Spion/Cameras.swift`: the camera list for the View menu, kept current as devices connect.
+  its capture session. The camera, mirroring and shape are `@AppStorage`: shape from the View menu, the rest from the Camera menu.
+- `Spion/Cameras.swift`: the camera list for the Camera menu, kept current as devices connect.
 - `Spion/WindowBehavior.swift`: AppKit fixes for the borderless window, as a background view.
 - `Spion/Icon.icon`: the Icon Composer app icon, set by `ASSETCATALOG_COMPILER_APPICON_NAME`.
   It's compiled by the Resources build phase, so keep that phase even when it looks empty.
@@ -93,7 +93,7 @@ Delete items when they're done; the history is in git.
   its window square by only ever setting square frames while resizing.
 - Show over other apps' full-screen Spaces. Per Apple DTS this needs an `.accessory`
   activation policy and a non-activating `NSPanel`. It goes with moving to a menu bar extra,
-  since accessory apps have no menu bar for the View menu.
+  since accessory apps have no menu bar for these menus.
 - If the saved frame is off-screen (a display was unplugged), check that it comes back on
   screen. Iris checks its saved origin against `NSScreen.screens` visible frames and centers
   the window when nothing intersects.

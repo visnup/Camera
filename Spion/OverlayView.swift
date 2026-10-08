@@ -5,7 +5,7 @@ struct OverlayView: View {
     static let margin: CGFloat = 4
     static let cornerRadius: CGFloat = 16
 
-    @AppStorage("circle") private var circle = false
+    @AppStorage("circle") private var circle = true
     @AppStorage("camera") private var camera = ""
     @AppStorage("mirrored") private var mirrored = true
     @State private var authorized: Bool?
