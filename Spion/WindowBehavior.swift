@@ -30,7 +30,7 @@ private final class WindowBehaviorView: NSView {
         window.styleMask.insert(.resizable)
         window.collectionBehavior.insert(.canJoinAllSpaces)
         // after SwiftUI's own initial sizing, which would override the restored frame
-        Task { window.setFrameAutosaveName("Camera") }
+        Task { window.setFrameAutosaveName("Spion") }
     }
 
     override func mouseMoved(with event: NSEvent) {

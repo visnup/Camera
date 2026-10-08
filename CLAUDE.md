@@ -1,4 +1,4 @@
-# Camera
+# Spion
 
 A macOS app that shows the camera feed as a small floating overlay on the screen. That's the whole
 scope.
@@ -18,14 +18,14 @@ scope.
 
 ## Layout
 
-- `Camera/CameraApp.swift`: the single overlay `Window` scene.
-- `Camera/OverlayView.swift`: the overlay, the camera-access check, and the camera view with
+- `Spion/SpionApp.swift`: the single overlay `Window` scene.
+- `Spion/OverlayView.swift`: the overlay, the camera-access check, and the camera view with
   its capture session. The camera, mirroring and shape are `@AppStorage`, set from the View menu.
-- `Camera/Cameras.swift`: the camera list for the View menu, kept current as devices connect.
-- `Camera/WindowBehavior.swift`: AppKit fixes for the borderless window, as a background view.
-- `Camera/Icon.icon`: the Icon Composer app icon, set by `ASSETCATALOG_COMPILER_APPICON_NAME`.
+- `Spion/Cameras.swift`: the camera list for the View menu, kept current as devices connect.
+- `Spion/WindowBehavior.swift`: AppKit fixes for the borderless window, as a background view.
+- `Spion/Icon.icon`: the Icon Composer app icon, set by `ASSETCATALOG_COMPILER_APPICON_NAME`.
   It's compiled by the Resources build phase, so keep that phase even when it looks empty.
-- Sources are a file-system-synchronized group, so new files in `Camera/` join the target without
+- Sources are a file-system-synchronized group, so new files in `Spion/` join the target without
   editing `project.pbxproj`.
 - The `.plain` window is borderless, and `WindowBehavior` works around what that costs:
   - It isn't resizable (style mask `0`), so the view inserts `.resizable`.
@@ -59,11 +59,11 @@ Remove or fix them before the commit.
 ## Verify
 
 ```sh
-xcodebuild -project Camera.xcodeproj -scheme Camera -destination 'platform=macOS' -derivedDataPath DerivedData/Camera build
-open DerivedData/Camera/Build/Products/Debug/Camera.app
+xcodebuild -project Spion.xcodeproj -scheme Spion -destination 'platform=macOS' -derivedDataPath DerivedData/Spion build
+open DerivedData/Spion/Build/Products/Debug/Spion.app
 ```
 
-`DerivedData/Camera` is where Xcode itself builds (project-relative DerivedData), so both share
+`DerivedData/Spion` is where Xcode itself builds (project-relative DerivedData), so both share
 one build.
 
 ## Todo
@@ -74,18 +74,28 @@ Delete items when they're done; the history is in git.
   wants one shape with an animatable corner radius (a rect whose radius goes to half the
   shorter side) plus a square frame in circle mode.
 - Animate mirroring, if it can look good. A preview layer's `isVideoMirrored` snaps; a
-  SwiftUI flip (`scaleEffect(x: -1)` or a `rotation3DEffect`) would animate.
+  SwiftUI flip (`scaleEffect(x: -1)` or a `rotation3DEffect`) would animate. Iris flips the
+  preview layer with a `CATransform3DMakeScale(-1, 1, 1)` transform instead of the connection.
 - Research resizing and do it in the most idiomatic macOS way. Today it's AppKit's narrow
   borderless resize zone, a 4pt margin sized to roughly match it, and hand-set cursors.
   Look at how other borderless and shaped utility windows do it, whether SwiftUI or AppKit
   now has a resize affordance for plain windows, `NSPanel`, and how a titled window with a
   hidden title bar and buttons compares.
+  - [Iris](https://github.com/ahmetb/Iris) (`Iris/Iris/CircularWindow.swift`), a circular
+    camera overlay, does it all by hand, in about 250 lines: no `.resizable`, an 18pt ring
+    inside the circle resizes, the rest moves with its own drag code. Resizing pins the
+    opposite corner and sets a square frame from the mouse distance. Our hand-rolled
+    attempt was janky; Iris disables implicit layer animations (`CATransaction`
+    `setDisableActions`, `actions` set to `NSNull` on the preview layer) and calls
+    `setFrame(_:display: false, animate: false)`, which may be the difference (untested).
 - In circle mode, make the window square, or resize it to a square, so there's no dead
-  transparent area beside the circle. Match the hover frame to the circle too.
+  transparent area beside the circle. Match the hover frame to the circle too. Iris keeps
+  its window square by only ever setting square frames while resizing.
 - Show over other apps' full-screen Spaces. Per Apple DTS this needs an `.accessory`
   activation policy and a non-activating `NSPanel`. It goes with moving to a menu bar extra,
   since accessory apps have no menu bar for the View menu.
 - If the saved frame is off-screen (a display was unplugged), check that it comes back on
-  screen.
+  screen. Iris checks its saved origin against `NSScreen.screens` visible frames and centers
+  the window when nothing intersects.
 - Before sharing builds: a real bundle identifier (this resets camera permission), a README,
   and a signed, notarized release.

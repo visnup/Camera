@@ -1,14 +1,14 @@
 import AVFoundation
 import SwiftUI
 
-@main struct CameraApp: App {
+@main struct SpionApp: App {
     @AppStorage("circle") private var circle = false
     @AppStorage("camera") private var camera = ""
     @AppStorage("mirrored") private var mirrored = true
     @State private var cameras = Cameras()
 
     var body: some Scene {
-        Window("Camera", id: "camera") {
+        Window("Spion", id: "spion") {
             OverlayView()
         }
         .windowStyle(.plain)
