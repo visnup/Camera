@@ -18,6 +18,8 @@ scope.
 - `Camera/CameraApp.swift`: the single overlay `Window` scene.
 - `Camera/OverlayView.swift`: the overlay and the camera view with its capture session.
 - `Camera/WindowBehavior.swift`: AppKit fixes for the borderless window, as a background view.
+- `Camera/Icon.icon`: the Icon Composer app icon, set by `ASSETCATALOG_COMPILER_APPICON_NAME`.
+  It's compiled by the Resources build phase, so keep that phase even when it looks empty.
 - Sources are a file-system-synchronized group, so new files in `Camera/` join the target without
   editing `project.pbxproj`.
 - The `.plain` window is borderless, and `WindowBehavior` works around what that costs:
