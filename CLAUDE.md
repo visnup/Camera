@@ -18,6 +18,13 @@ scope.
 - `Camera/OverlayView.swift`: the overlay and the camera view with its capture session.
 - Sources are a file-system-synchronized group, so new files in `Camera/` join the target without
   editing `project.pbxproj`.
+- The `.plain` window is borderless, which costs three things `ResizableView` puts back:
+  - It isn't resizable (style mask `0`), so the view inserts `.resizable`.
+  - It can't become key, so `.pointerStyle` and cursor rects never show. An `.activeAlways`
+    tracking area sets the `NSCursor.frameResize` cursors instead.
+  - Clicks on fully transparent pixels fall through to the window behind. The resize margin
+    around the video has a 1% black fill so it catches them.
+  - Don't resize the window by hand from mouse events: it was janky. Let AppKit do it.
 - Camera access: `ENABLE_RESOURCE_ACCESS_CAMERA` (sandbox entitlement) and
   `INFOPLIST_KEY_NSCameraUsageDescription` in build settings.
 

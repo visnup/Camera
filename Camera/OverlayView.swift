@@ -2,14 +2,20 @@ import AVFoundation
 import SwiftUI
 
 struct OverlayView: View {
+    @AppStorage("circle") private var circle = false
+
     var body: some View {
+        let shape = circle ? AnyShape(.circle) : AnyShape(.rect(cornerRadius: 16))
         CameraView()
             .allowsHitTesting(false)
-            .frame(minWidth: 90, minHeight: 90)
-            .clipShape(.rect(cornerRadius: 16))
-            .contentShape(.rect)
+            .clipShape(shape)
+            .contentShape(shape)
             .gesture(WindowDragGesture())
             .allowsWindowActivationEvents(true)
+            .onTapGesture(count: 2) { circle.toggle() }
+            .padding(ResizableView.margin)
+            .background(.black.opacity(0.01)) // fully transparent pixels click through the window
+            .frame(minWidth: 90, minHeight: 90)
     }
 }
 
@@ -38,8 +44,49 @@ struct CameraView: NSViewRepresentable {
 }
 
 /// `.windowStyle(.plain)` makes a borderless window that SwiftUI gives no way to resize.
-private final class ResizableView: NSView {
+/// It also can't become key, so cursor rects and `.pointerStyle` never apply; an
+/// always-active tracking area over the window's margin sets the resize cursors instead.
+final class ResizableView: NSView {
+    static let margin: CGFloat = 8
+
     override func viewDidMoveToWindow() {
         window?.styleMask.insert(.resizable)
+        window?.contentView?.addTrackingArea(NSTrackingArea(
+            rect: .zero,
+            options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect],
+            owner: self
+        ))
+    }
+
+    override func mouseMoved(with event: NSEvent) {
+        if let position = edge(at: event.locationInWindow) {
+            NSCursor.frameResize(position: position, directions: .all).set()
+        } else {
+            NSCursor.arrow.set()
+        }
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        NSCursor.arrow.set()
+    }
+
+    private func edge(at point: NSPoint) -> NSCursor.FrameResizePosition? {
+        guard let size = window?.frame.size else { return nil }
+        let inset = Self.margin
+        let top = point.y > size.height - inset
+        let bottom = point.y < inset
+        let left = point.x < inset
+        let right = point.x > size.width - inset
+        return switch (top, bottom, left, right) {
+        case (true, _, true, _): .topLeft
+        case (true, _, _, true): .topRight
+        case (_, true, true, _): .bottomLeft
+        case (_, true, _, true): .bottomRight
+        case (true, _, _, _): .top
+        case (_, true, _, _): .bottom
+        case (_, _, true, _): .left
+        case (_, _, _, true): .right
+        default: nil
+        }
     }
 }
