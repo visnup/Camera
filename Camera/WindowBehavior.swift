@@ -7,6 +7,7 @@ import SwiftUI
 ///   tracking area sets the resize cursors over the margin instead
 /// - SwiftUI only restores windows when macOS's "Close windows when quitting an application"
 ///   setting is off, so the frame is autosaved
+/// - it stays on one Space, so this joins it to every Space
 struct WindowBehavior: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView { WindowBehaviorView() }
     func updateNSView(_ nsView: NSView, context: Context) {}
@@ -27,6 +28,7 @@ private final class WindowBehaviorView: NSView {
     override func viewDidMoveToWindow() {
         guard let window else { return }
         window.styleMask.insert(.resizable)
+        window.collectionBehavior.insert(.canJoinAllSpaces)
         // after SwiftUI's own initial sizing, which would override the restored frame
         Task { window.setFrameAutosaveName("Camera") }
     }

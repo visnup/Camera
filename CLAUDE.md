@@ -24,6 +24,10 @@ scope.
   editing `project.pbxproj`.
 - The `.plain` window is borderless, and `WindowBehavior` works around what that costs:
   - It isn't resizable (style mask `0`), so the view inserts `.resizable`.
+  - SwiftUI has no scene modifier for Spaces, so `collectionBehavior` gets `.canJoinAllSpaces`.
+    It doesn't show over other apps' full-screen Spaces, and `.fullScreenAuxiliary` doesn't
+    change that. Per Apple DTS that takes an `.accessory` activation policy (no Dock icon or
+    menu bar) plus a non-activating `NSPanel`.
   - It can't become key, so `.pointerStyle` and cursor rects never show. An `.activeAlways`
     tracking area sets the `NSCursor.frameResize` cursors instead.
   - Clicks on fully transparent pixels fall through to the window behind. The margin around
